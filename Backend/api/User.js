@@ -84,7 +84,6 @@ router.post('/signup', (req, res) => {
 //Signin
 router.post('/signin', (req, res) => {
     const { username, password } = req.body;
-    // Add your signin logic here
     res.status(200).json({ message: 'User signed in successfully' });
 });
 
