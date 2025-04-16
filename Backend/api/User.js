@@ -83,8 +83,46 @@ router.post('/signup', (req, res) => {
 
 //Signin
 router.post('/signin', (req, res) => {
-    const { username, password } = req.body;
-    res.status(200).json({ message: 'User signed in successfully' });
+    let { email, password } = req.body;
+    email= email.trim();
+    password= password.trim();
+
+    if(email=="" || password==""){
+        res.status(400).json({
+            message:"Empty input fields"
+        });
+    } else {
+        User.find({email}).then((result)=>{
+            if(result.length){
+                //compare password
+                bcrypt.compare(password, result[0].password).then((isMatch)=>{
+                    if(isMatch){
+                        res.status(200).json({
+                            message:"User signed in successfully",
+                            data:result[0]
+                        });
+                    } else {
+                        res.status(400).json({
+                            message:"Invalid password"
+                        });
+                    }
+                }).catch((err)=>{
+                    res.status(500).json({
+                        message:"An error occurred while comparing passwords!"
+                    });
+                });
+            } else {
+                res.status(400).json({
+                    message:"User with the provided email does not exist"
+                });
+            };
+        }).catch((err)=>{
+            console.log(err);
+            res.status(500).json({
+                message:"An error occurred while checking for existing user!"
+            });
+        });
+    }
 });
 
 module.exports = router;
