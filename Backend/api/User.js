@@ -44,9 +44,6 @@ router.post('/signup', (req, res) => {
                     message:"User with the provided email already exists"
                 });
             } else {
-                //Try to create a new user
-
-                //password hashing
                 const saltRounds = 10;
                 bcrypt.hash(password, saltRounds).then((hashedPassword) => {
                     const newUser = new User({
